@@ -17,8 +17,17 @@ public class ItemsController : ControllerBase
     public IEnumerable<ItemDto> Get() => items;
 
     [HttpGet("{id}")]
-    public ItemDto GetById(Guid id)
-        => items.FirstOrDefault(i => i.Id == id);
+    public ActionResult<ItemDto> GetById(Guid id)
+    {
+        var item = items.FirstOrDefault(i => i.Id == id);
+
+        if (item == null)
+        {
+            return NotFound();
+        }
+
+        return item;
+    }
 
     [HttpPost]
     public ActionResult<ItemDto> Post(CreateItemDto createItemDto)
@@ -41,6 +50,11 @@ public class ItemsController : ControllerBase
         var existingItem = items
             .FirstOrDefault(i => i.Id == id);
 
+        if (existingItem == null)
+        {
+            return NotFound();
+        }
+
         var updatedItem = existingItem with
         {
             Name = updateItemDto.Name,
@@ -60,6 +74,11 @@ public class ItemsController : ControllerBase
     {
         var index = items
             .FindIndex(existingItem => existingItem.Id == id);
+
+        if (index < 0)
+        {
+            return NotFound();
+        }
 
         items.RemoveAt(index);
 
