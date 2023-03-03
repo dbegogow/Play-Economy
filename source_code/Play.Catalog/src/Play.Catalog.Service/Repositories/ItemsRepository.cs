@@ -15,20 +15,20 @@ public class ItemsRepository
         var mongoClient = new MongoClient("mongodb://localhost:27017");
         var database = mongoClient.GetDatabase("Catalog");
 
-        dbCollection = database.GetCollection<Item>(collectionName);
+        this.dbCollection = database.GetCollection<Item>(collectionName);
     }
 
     public async Task<IReadOnlyCollection<Item>> GetAllAsync()
         => await this.dbCollection
-            .Find(filterBuilder.Empty)
+            .Find(this.filterBuilder.Empty)
             .ToListAsync();
 
     public async Task<Item> GetAsync(Guid id)
     {
-        var filter = filterBuilder
+        var filter = this.filterBuilder
             .Eq(entity => entity.Id, id);
 
-        return await dbCollection
+        return await this.dbCollection
             .Find(filter)
             .FirstOrDefaultAsync();
     }
@@ -40,7 +40,7 @@ public class ItemsRepository
             throw new ArgumentException(nameof(entity));
         }
 
-        await dbCollection.InsertOneAsync(entity);
+        await this.dbCollection.InsertOneAsync(entity);
     }
 
     public async Task UpdateAsync(Item entity)
@@ -50,17 +50,17 @@ public class ItemsRepository
             throw new ArgumentException(nameof(entity));
         }
 
-        var filter = filterBuilder
+        var filter = this.filterBuilder
             .Eq(existingEntity => existingEntity.Id, entity.Id);
 
-        await dbCollection.ReplaceOneAsync(filter, entity);
+        await this.dbCollection.ReplaceOneAsync(filter, entity);
     }
 
     public async Task RemoveAsync(Guid id)
     {
-        var filter = filterBuilder
+        var filter = this.filterBuilder
             .Eq(entity => entity.Id, id);
 
-        await dbCollection.DeleteOneAsync(filter);
+        await this.dbCollection.DeleteOneAsync(filter);
     }
 }
