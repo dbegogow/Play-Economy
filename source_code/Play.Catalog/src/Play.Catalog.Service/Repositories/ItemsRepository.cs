@@ -1,22 +1,16 @@
 ﻿using Play.Catalog.Service.Entities;
 using MongoDB.Driver;
-using SharpCompress.Common;
 
 namespace Play.Catalog.Service.Repositories;
 
-public class ItemsRepository
+public class ItemsRepository : IItemsRepository
 {
     private const string collectionName = "items";
     private readonly IMongoCollection<Item> dbCollection;
     private readonly FilterDefinitionBuilder<Item> filterBuilder = Builders<Item>.Filter;
 
-    public ItemsRepository()
-    {
-        var mongoClient = new MongoClient("mongodb://localhost:27017");
-        var database = mongoClient.GetDatabase("Catalog");
-
-        this.dbCollection = database.GetCollection<Item>(collectionName);
-    }
+    public ItemsRepository(IMongoDatabase database)
+        => this.dbCollection = database.GetCollection<Item>(collectionName);
 
     public async Task<IReadOnlyCollection<Item>> GetAllAsync()
         => await this.dbCollection
