@@ -1,11 +1,11 @@
 using Play.Catalog.Service.Entities;
-using Play.Catalog.Service.Repositories;
+using Play.Common.MongoDB;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var configuration = builder.Configuration;
 
-builder.Services.AddMongo(configuration);
+builder.Services.AddMongo();
 builder.Services.AddMongoRepository<Item>("items");
 
 builder.Services.AddControllers(options =>
