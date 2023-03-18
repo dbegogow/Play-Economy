@@ -1,6 +1,6 @@
 ﻿namespace Play.Inventory.Service;
 
-public record GrandItemsDto(
+public record GrantItemsDto(
         Guid UserId,
         Guid
         CatalogItemId,
@@ -8,5 +8,12 @@ public record GrandItemsDto(
 
 public record InventoryItemDto(
     Guid CatalogItemId,
+    string Name,
+    string Description,
     int Quantity,
     DateTimeOffset AcquiredDate);
+
+public record CatalogItemDto(
+    Guid Id,
+    string Name,
+    string Description);
