@@ -31,6 +31,6 @@ public class CatalogItemCreatedConsumers : IConsumer<CatalogItemCreated>
             Description = message.Description
         };
 
-        await repository.CreateAsync(item);
+        await this.repository.CreateAsync(item);
     }
 }
