@@ -1,16 +1,19 @@
 using Play.Inventory.Service.Entities;
 using Play.Inventory.Service.Clients;
 using Play.Common.MongoDB;
+using Play.Common.MassTransit;
 using Polly;
 using Polly.Timeout;
-using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var configuration = builder.Configuration;
 
-builder.Services.AddMongo();
-builder.Services.AddMongoRepository<InventoryItem>("inventoryitems");
+builder.Services
+    .AddMongo()
+    .AddMongoRepository<InventoryItem>("inventoryitems")
+    .AddMongoRepository<CatalogItem>("catalogitems")
+    .AddMassTransiteWithRabbitMq();
 
 var random = new Random();
 
@@ -44,20 +47,22 @@ builder.Services
 
 builder.Services.AddControllers();
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services
+    .AddEndpointsApiExplorer()
+    .AddSwaggerGen();
 
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app
+        .UseSwagger()
+        .UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
+app
+    .UseHttpsRedirection()
+    .UseAuthorization();
 
 app.MapControllers();
 
